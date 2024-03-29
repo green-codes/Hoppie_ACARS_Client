@@ -1,0 +1,12 @@
+[Unit]
+Description=Hoppie ACARS Station
+After=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/bin/python -u /etc/k7gcl/hoppie/hoppie_station.py
+
+[Install]
+WantedBy=multi-user.target
