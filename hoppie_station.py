@@ -186,7 +186,7 @@ def process_cpdlc_msg(sender, packet):
 
         elif "WHEN CAN WE EXPECT" in msg:
             msg = msg.replace("WHEN CAN WE EXPECT", "").strip()
-            req_time = datetime.utcnow() + timedelta(minutes=randint(2, 5))
+            req_time = datetime.now(datetime.UTC) + timedelta(minutes=randint(2, 5))
 
             if "HIGHER ALT" in msg:
                 return send_cpdlc(
