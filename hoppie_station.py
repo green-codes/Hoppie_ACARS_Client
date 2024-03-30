@@ -9,19 +9,19 @@ import requests
 from queue import SimpleQueue
 
 # config
-hoppie_url = "http://www.hoppie.nl/acars/system/connect.html"
+hoppie_url = "https://www.hoppie.nl/acars/system/connect.html"
 hoppie_logon = "nZMVH56rpANeUC"
 hoppie_station = "EQCA"
 displayed_packet_types = {
     "progress": True,
     "cpdlc": True,
     "telex": True,
-    "ping": False,
-    "posreq": False,
+    "ping": True,
+    "posreq": True,
     "position": True,
-    "datareq": False,
-    "poll": False,
-    "peek": False,
+    "datareq": True,
+    "poll": True,
+    "peek": True,
 }
 
 # trackers
@@ -36,7 +36,7 @@ def generate_squawk():
     return squawk
 
 
-def send_msg(recipient, packet_type, packet):
+def send_msg(recipient, packet_type, packet, sender=hoppie_station):
     if displayed_packet_types[packet_type]:
         msg_q.put(
             f"{datetime.now().isoformat()[:-7]} >>> {recipient} {packet_type} {packet}"
@@ -45,7 +45,7 @@ def send_msg(recipient, packet_type, packet):
         hoppie_url,
         {
             "logon": hoppie_logon,
-            "from": hoppie_station,
+            "from": sender,
             "to": recipient,
             "type": packet_type,
             "packet": packet,
@@ -87,13 +87,13 @@ def receive_msg():
     return entries
 
 
-def send_cpdlc(recipient, message, mrn="", response="NE"):
+def send_cpdlc(recipient, message, mrn="", response="NE", sender=hoppie_station):
     # mrn: ID of message to respond to
     # response: specifies how the recipient should respond
     #           list: WU, AN, R, NE
     station_msg_id = randint(150, 950)
     packet = f"/data2/{station_msg_id}/{mrn}/{response}/{message}"
-    _ = send_msg(recipient, "cpdlc", packet)  # send ok, discard reply
+    _ = send_msg(recipient, "cpdlc", packet, sender)  # send ok, discard reply
     return (recipient, "cpdlc", packet)  # for processing
 
 
