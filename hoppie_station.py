@@ -1,5 +1,7 @@
 #
 
+# CPDLC reference: https://www.notams.faa.gov/downloads/CPDLC_ver_10.pdf
+
 import sys
 import re
 from random import randint
